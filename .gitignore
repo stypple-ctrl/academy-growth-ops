@@ -1,0 +1,8 @@
+# Local restore copies and machine-specific files
+backups/
+.DS_Store
+node_modules/
+.env
+.env.*
+!.env.example
+*.log

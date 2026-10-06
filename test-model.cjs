@@ -1,0 +1,7 @@
+const assert=require('node:assert/strict');const G=require('./model.js');let d=G.seed();assert.equal(d.students.length,48);assert.equal(d.tasks.length,10);assert(d.students.every(s=>s.teacher&&s.native));assert.equal(G.assessment(23,30,80).pass,false);assert.equal(G.assessment(24,30,80).pass,true);assert.throws(()=>G.assessment(31,30,80));const t=d.tasks[0];G.result(d,t,'시작','조교');G.result(d,t,'결과','조교',24);assert(t.primaryDone&&t.open);assert.equal(t.status,'학습중');G.result(d,t,'귀가','조교');assert(t.open);assert.equal(t.notification,'검토 필요');assert.equal(t.status,'미완료');G.result(d,t,'시작','조교');G.result(d,t,'결과','조교');assert.equal(t.status,'완료');assert.equal(t.open,false);G.event(d,1,'관찰','Reading','공개하면 안 되는 메모','교사','INTERNAL ONLY');G.event(d,1,'관찰','Reading','검토 필요','교사','NEEDS REVIEW');assert(!G.reportEvents(d,1,'2026-10').some(e=>e.visibility!=='REPORTABLE'));assert(G.reportEvents(d,1,'2026-09').every(e=>e.date.startsWith('2026-09')));console.log('PASS: 학생/복수교사, 23 FAIL / 24 PASS, Secondary 전환, 미완료 이월/알림, 최종 완료, 리포트 공개범위·기간');
+for(const values of [{},{help:'1~2회 도움'},{help:'혼자 수행',progress:'원활'}]){
+ const sample=G.seed(),task=sample.tasks[0];Object.assign(task,values);G.result(sample,task,'결과','조교',24);
+ const facts=sample.events.filter(e=>e.type==='수행 사실'&&e.student===task.student);
+ assert.equal(facts.map(e=>e.text).join(''),Object.values(values).join(' · '),'미선택 항목을 사실로 기록하면 안 됨');
+}
+console.log('PASS: 미확인/부분 선택/명시적 수행 사실');
