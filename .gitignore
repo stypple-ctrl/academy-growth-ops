@@ -6,3 +6,6 @@ node_modules/
 .env.*
 !.env.example
 *.log
+
+# Local agent runtime state
+.omc/
