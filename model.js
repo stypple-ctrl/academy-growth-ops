@@ -9,12 +9,43 @@ tasks.forEach((t,i)=>{events.push({id:events.length+1,student:t.student,date:'20
 return {students,events,tasks,cases,settings:{total:30,threshold:80},reports:{},version:1};}
 function assessment(correct,total,threshold){if(!Number.isInteger(correct)||correct<0||correct>total)throw Error('정답수를 확인해 주세요.');return {correct,total,percentage:Math.round(correct/total*100),pass:correct/total*100>=threshold};}
 function event(db,id,type,area,text,actor,visibility='REPORTABLE',extra={}){const e={id:Date.now()+Math.random(),student:id,date:TODAY+'T'+new Date().toTimeString().slice(0,8),type,area,text,actor,visibility,...extra};db.events.push(e);return e;}
-function result(db,task,action,actor,correct){if(action==='귀가'){task.status='미완료';task.open=true;task.notification='검토 필요';task.reviewedBy=null;task.sentAt=null;event(db,task.student,'미완료 귀가','나머지',`${task.primaryDone?task.secondary:task.primary} 미완료 · 다음 등원 이월`,actor);return;}
-if(action==='시작'){task.started=Date.now();task.status='학습중';event(db,task.student,'입실','나머지',task.primary+' 시작',actor);return;}
-if(action==='확인'){task.status='확인대기';return;}
-if(action==='결과'){const facts=[task.help,task.progress].filter(Boolean);if(facts.length)event(db,task.student,'수행 사실','나머지',facts.join(' · '),actor);if(task.vocab&&!task.primaryDone){const a=assessment(correct,db.settings.total,db.settings.threshold);task.attempt++;event(db,task.student,'재시험','Vocabulary',`${correct}/${a.total} · ${a.pass?'PASS':'FAIL'} · ${task.attempt}차`,actor,'REPORTABLE',{...a,attempt:task.attempt,elapsed:task.started?(Date.now()-task.started)/60000:null});if(!a.pass){task.status='학습중';return;}}
-if(task.primaryDone){task.secondaryDone=true;task.open=false;task.status='완료';event(db,task.student,'완료','나머지',task.secondary+' 완료',actor);}else{task.primaryDone=true;task.status='학습중';event(db,task.student,'Primary 완료','나머지',task.primary+' 완료 · 추가 과제: '+task.secondary,actor);} }
+function requiresSecondary(task){return task.secondaryRequired!==false;}
+function optionalPending(task){return !requiresSecondary(task)&&task.primaryDone&&!task.secondaryDone&&Boolean(task.secondary);}
+function resolveNotification(task){
+ if(['검토 필요','승인 완료'].includes(task.notification))task.notification='취소됨';
+ else if(task.notification==='모의 발송 완료')task.notification='후속 확인 필요';
+}
+function result(db,task,action,actor,correct){
+ if(action==='복습완료'){
+  if(!optionalPending(task))return;
+  task.secondaryDone=true;event(db,task.student,'선택 복습 완료','나머지',task.secondary+' · 선택 복습 완료',actor);return;
+ }
+ // Completed required work cannot be reopened by an accidental repeated click.
+ if(!task.open)return;
+ if(action==='귀가'){
+  task.status='미완료';task.open=true;task.notification='검토 필요';task.reviewedBy=null;task.sentAt=null;
+  task.notificationBody=`${task.primaryDone?task.secondary:task.primary} 미완료 · 다음 등원 이월`;
+  event(db,task.student,'미완료 귀가','나머지',task.notificationBody,actor);return;
+ }
+ if(action==='시작'){task.started=Date.now();task.status='학습중';event(db,task.student,'입실','나머지',(task.primaryDone?task.secondary:task.primary)+' 시작',actor);return;}
+ if(action==='확인'){task.status='확인대기';return;}
+ if(action!=='결과')return;
+ const a=task.vocab&&!task.primaryDone?assessment(correct,db.settings.total,db.settings.threshold):null;
+ const facts=[task.help,task.progress].filter(Boolean);if(facts.length)event(db,task.student,'수행 사실','나머지',facts.join(' · '),actor);
+ if(a){task.attempt=(task.attempt||0)+1;event(db,task.student,'재시험','Vocabulary',`${correct}/${a.total} · ${a.pass?'PASS':'FAIL'} · ${task.attempt}차`,actor,'REPORTABLE',{...a,attempt:task.attempt,elapsed:task.started?(Date.now()-task.started)/60000:null});if(!a.pass){task.status='학습중';return;}}
+ if(task.primaryDone){task.secondaryDone=true;task.open=false;task.status='완료';resolveNotification(task);event(db,task.student,'완료','나머지',task.secondary+' 완료',actor);}
+ else{
+  task.primaryDone=true;task.open=requiresSecondary(task);task.status=task.open?'학습중':'완료';
+  if(!task.open)resolveNotification(task);
+  else if(task.notification){
+   task.notificationHistory??=[];
+   task.notificationHistory.push({status:task.notification,body:task.notificationBody||task.primary+' 미완료 · 다음 등원 이월',reviewedBy:task.reviewedBy||null,sentAt:task.sentAt||null});
+   task.notificationBody=task.secondary+' 미완료 · 다음 등원 이월';
+   task.notification='검토 필요';task.reviewedBy=null;task.sentAt=null;
+  }
+  event(db,task.student,'Primary 완료','나머지',task.primary+' 완료'+(task.secondary?` · ${requiresSecondary(task)?'필수 추가 과제':'선택 복습'}: ${task.secondary}`:''),actor);
+ }
 }
 function reportEvents(db,id,month){return db.events.filter(e=>e.student===id&&e.date.startsWith(month)&&e.visibility==='REPORTABLE');}
-root.Growth={seed,assessment,event,result,reportEvents,TODAY};if(typeof module!=='undefined')module.exports=root.Growth;
+root.Growth={seed,assessment,event,result,reportEvents,requiresSecondary,optionalPending,TODAY};if(typeof module!=='undefined')module.exports=root.Growth;
 })(typeof window==='undefined'?globalThis:window);

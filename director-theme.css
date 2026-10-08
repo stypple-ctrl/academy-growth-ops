@@ -1,0 +1,105 @@
+/* Warm, playful director preview. Original CSS sprout mascot; no Kakao brand assets. */
+.layout[data-view="dashboard"] {
+  --ink: #382f27;
+  --muted: #73685b;
+  --green: #705016;
+  --line: #eee5d6;
+  --focus: #856000;
+  background: #faf7ef;
+  color: var(--ink);
+}
+.layout[data-view="dashboard"] .sidebar {background:#fffdf7;border-right:1px solid #eee6d8}
+.layout[data-view="dashboard"] .brand {color:#382f27}
+.layout[data-view="dashboard"] .brand b {background:#ffe36e;color:#463721;border-radius:14px;box-shadow:0 3px 0 #eac953;font-weight:800}
+.layout[data-view="dashboard"] .brand small {color:#73685b}
+.layout[data-view="dashboard"] .nav button {color:#706557;border-radius:16px;padding-top:13px;padding-bottom:13px}
+.layout[data-view="dashboard"] .nav button:hover {background:#fff5d3}
+.layout[data-view="dashboard"] .nav button.active {background:#ffe875;color:#43351e;font-weight:700;box-shadow:0 3px 0 #ebd260}
+.layout[data-view="dashboard"] .nav .icon {color:inherit}
+.layout[data-view="dashboard"] .nav svg {stroke-width:1.9}
+.layout[data-view="dashboard"] .sidebar-bottom {border-color:#eee5d6;color:#635340}
+.layout[data-view="dashboard"] .topbar {background:#fffcf5;border-color:#eee5d6;backdrop-filter:none;-webkit-backdrop-filter:none}
+.layout[data-view="dashboard"] .topbar select {border-radius:13px;border-color:#e5dbc9;background:#fffdf8;color:#554837}
+.layout[data-view="dashboard"] .content {max-width:1500px;padding-top:30px}
+.layout[data-view="dashboard"] h1 {font-size:32px;letter-spacing:-1.1px;color:#382f27}
+.layout[data-view="dashboard"] h2 {color:#443627;font-weight:700}
+.layout[data-view="dashboard"] .heading>.eyebrow {display:none}
+.layout[data-view="dashboard"] .heading .muted {color:#73685b}
+.layout[data-view="dashboard"] .updated {color:#73685b;background:#f1eadc;padding:9px 13px;border-radius:20px}
+.layout[data-view="dashboard"] .demo {color:#73685b}
+.layout[data-view="dashboard"] .demo b {color:#685031}
+.layout[data-view="dashboard"] .demo-dot {background:#66805a}
+.layout[data-view="dashboard"] button {color:#624918;background:#fff4ce;border:1px solid #ebdba8;border-radius:13px}
+.layout[data-view="dashboard"] button:hover {background:#ffebaa;border-color:#dbc177}
+.layout[data-view="dashboard"] button:active {background:#ffdf75}
+.layout[data-view="dashboard"] button.primary {background:#ffe36e;color:#463721;border-color:#f1d258;box-shadow:0 3px 0 #e8c755;font-weight:700}
+.layout[data-view="dashboard"] button.primary:hover {background:#ffdc4e}
+.layout[data-view="dashboard"] .student-link {background:transparent;border:0;color:#382f27;box-shadow:none}
+.layout[data-view="dashboard"] .student-link:hover {color:#725013;text-decoration:underline}
+.layout[data-view="dashboard"] .director-welcome {position:relative;isolation:isolate;background:#ffed9b;border:1px solid #f1d978;border-radius:28px;padding:30px 32px;gap:20px;box-shadow:0 5px 0 #f0e6c8;margin-bottom:20px}
+.layout[data-view="dashboard"] .director-welcome .eyebrow {display:inline-block;background:#fff8dc;border-radius:20px;color:#705015;font-size:12px;padding:5px 12px;letter-spacing:0}
+.layout[data-view="dashboard"] .director-welcome h2 {font-size:28px;line-height:1.4;margin:12px 0 9px}
+.layout[data-view="dashboard"] .director-welcome strong {color:#634411;background:#fff9dc;padding:0 7px;border-radius:9px;white-space:nowrap}
+.layout[data-view="dashboard"] .director-welcome p {color:#6a542b;font-size:14px}
+.welcome-footnote {display:block;font-size:12px;color:#766135;margin-top:10px}
+.layout[data-view="dashboard"] .banner-count {min-width:116px;border:0;background:#fff8d7;border-radius:22px;padding:18px;text-align:center;align-items:center}
+.layout[data-view="dashboard"] .banner-count b {font-size:36px;color:#534225}
+.layout[data-view="dashboard"] .banner-count span {color:#705d38;font-size:12px}
+.welcome-copy {flex:1;min-width:0}
+.welcome-friend {position:relative;flex:0 0 135px;height:150px;align-self:center}
+.friend-body {position:absolute;width:100px;height:101px;left:18px;top:37px;border-radius:43% 44% 39% 39%;background:#fffdf0;border:2px solid #e9dcb3;transform:rotate(-7deg);z-index:2}
+.friend-eyes {position:absolute;left:28px;top:37px;width:6px;height:9px;border-radius:50%;background:#574531;box-shadow:31px 0 #574531}
+.friend-smile {position:absolute;left:43px;top:49px;width:13px;height:9px;border:2px solid #574531;border-top:0;border-radius:0 0 10px 10px}
+.friend-cheek {position:absolute;top:52px;width:15px;height:8px;border-radius:50%;background:#f6c7a7}
+.friend-cheek.left {left:13px}.friend-cheek.right {right:12px}
+.friend-leaf {position:absolute;z-index:3;top:12px;width:33px;height:28px;background:#91b97b;border:2px solid #7eaa66}
+.friend-leaf.left {left:35px;border-radius:4px 25px 3px 24px;transform:rotate(10deg)}
+.friend-leaf.right {left:66px;top:8px;border-radius:25px 4px 24px 3px;transform:rotate(-9deg)}
+.friend-shadow {position:absolute;bottom:5px;left:24px;width:96px;height:12px;background:#e9d278;border-radius:50%;z-index:1}
+.friend-spark {position:absolute;color:#af7925;font-size:21px}.friend-spark.one {right:-3px;top:30px}.friend-spark.two {left:0;top:4px;font-size:17px}
+.layout[data-view="dashboard"] .panel {border:1px solid #ece4d5;border-radius:24px;background:#fffefa;box-shadow:0 4px 0 #eee8dc70;padding:26px}
+.layout[data-view="dashboard"] .grid {gap:22px}
+.layout[data-view="dashboard"] .care-row {border-color:#f0e8da;padding:19px 0}
+.layout[data-view="dashboard"] .care-row p {color:#6e6050}
+.layout[data-view="dashboard"] .care-row small {color:#73685b}
+.layout[data-view="dashboard"] .care-symbol.new {background:#ecf1dc;color:#4d682c;border-radius:13px;transform:rotate(-5deg)}
+.layout[data-view="dashboard"] .care-symbol.attention {background:#ffe6d5;color:#8c4520;border-radius:13px;transform:rotate(5deg)}
+.layout[data-view="dashboard"] .badge {background:#edf3e2;color:#49642e;border-radius:10px}
+.layout[data-view="dashboard"] .badge.warn {background:#ffefc7;color:#80571b}
+.layout[data-view="dashboard"] .badge.red {background:#ffe5de;color:#993f29}
+.layout[data-view="dashboard"] .badge.gray {background:#f0ece3;color:#716354}
+.layout[data-view="dashboard"] .journey {background:#f0f3e4;border:1px solid #e5e9d7;border-radius:16px;color:#586740}
+.layout[data-view="dashboard"] .journey span {background:#ffffffad;padding:6px 8px;border-radius:10px}
+.layout[data-view="dashboard"] .journey i {color:#64744c}
+.layout[data-view="dashboard"] .item {border-color:#f0e8da}
+.layout[data-view="dashboard"] .item p {color:#73685b}
+.layout[data-view="dashboard"] .retention-equation {background:#fff9e7;border-radius:18px;padding:22px 10px;margin-bottom:14px}
+.layout[data-view="dashboard"] .retention-equation b {color:#59472e}
+.layout[data-view="dashboard"] .retention-equation .positive b {color:#4f743c}
+.layout[data-view="dashboard"] .retention-equation span,.layout[data-view="dashboard"] .retention-equation i {color:#73685b}
+.layout[data-view="dashboard"] .teacher-progress .progress {height:9px;background:#f1ecdf}
+.layout[data-view="dashboard"] .teacher-progress .progress span {background:#a8bd88;border-radius:9px}
+.layout[data-view="dashboard"] .teacher-progress>b {color:#59472e}
+.layout[data-view="dashboard"] .secondary-overview>summary {background:#f1ebdd;border:1px solid #e5dccc;color:#655239;border-radius:18px}
+.layout[data-view="dashboard"] .filters {background:#fffefa;border-color:#ece4d5;border-radius:17px}
+.layout[data-view="dashboard"] input,.layout[data-view="dashboard"] select {border-color:#d9cebc;color:#59472e;background:#fffefa}
+.layout[data-view="dashboard"] .stat {border-color:#ece4d5;border-radius:20px;background:#fffefa}
+.layout[data-view="dashboard"] .stat:first-child {background:#fff3c5}
+.layout[data-view="dashboard"] .stat:nth-child(3) {background:#edf3e3}
+.layout[data-view="dashboard"] .action-strip {background:#fff2c3;border-color:#efdfa5;border-radius:22px}
+.layout[data-view="dashboard"] .action-strip p {color:#736044}
+.layout[data-view="dashboard"] th {background:#f6f0e5;color:#73685b}
+.layout[data-view="dashboard"] td {border-color:#f0e8da}
+.layout[data-view="dashboard"] tbody tr:hover {background:#fffaee}
+.layout[data-view="dashboard"] .flow-node {background:#f5efde;border-radius:16px}
+.layout[data-view="dashboard"] .flow-node span {color:#71624c}
+.layout[data-view="dashboard"] .avatar {background:#f5eacb;color:#71603e;border-radius:13px}
+/* Dialogs opened from this preview carry the same theme, without changing other roles. */
+body:has(.layout[data-view="dashboard"]) .modal {background:#fffdf7;border-radius:26px;color:#382f27}
+body:has(.layout[data-view="dashboard"]) .modal button {background:#fff3ce;color:#624918;border-color:#ead9a5;border-radius:13px}
+body:has(.layout[data-view="dashboard"]) .modal button.primary {background:#ffe36e;color:#463721;box-shadow:0 3px 0 #e8c755}
+body:has(.layout[data-view="dashboard"]) .modal .eyebrow {color:#73685b}
+@media(max-width:1150px){.welcome-friend{flex-basis:115px;transform:scale(.9)}.layout[data-view="dashboard"] .director-welcome{padding:26px;gap:15px}.layout[data-view="dashboard"] .director-welcome h2{font-size:25px}}
+@media(max-width:650px){.layout[data-view="dashboard"] .content{padding:22px 16px 32px}.layout[data-view="dashboard"] h1{font-size:28px}.layout[data-view="dashboard"] .director-welcome{padding:22px;border-radius:23px;display:grid;grid-template-columns:minmax(0,1fr) 85px;gap:16px 6px}.welcome-copy{grid-column:1/-1;padding-right:0}.welcome-friend{grid-column:2;grid-row:2;width:110px;height:120px;transform:scale(.7);transform-origin:center;justify-self:end;margin:-13px -9px}.layout[data-view="dashboard"] .banner-count{grid-column:1;grid-row:2;width:auto;min-width:0;flex-direction:row;gap:12px;padding:12px 16px;text-align:left;justify-self:start}.layout[data-view="dashboard"] .banner-count b{font-size:28px}.layout[data-view="dashboard"] .director-welcome h2{font-size:23px}.layout[data-view="dashboard"] .panel{padding:20px;border-radius:21px}.layout[data-view="dashboard"] .journey{gap:4px;padding:12px 7px}.layout[data-view="dashboard"] .journey span{padding:5px}.layout[data-view="dashboard"] .nav button{padding:10px 13px}}
+@media(prefers-contrast:more){.layout[data-view="dashboard"]{--muted:#514532;--line:#a28d69}.layout[data-view="dashboard"] .panel,.layout[data-view="dashboard"] .stat,.layout[data-view="dashboard"] button{border-color:#a28d69}.layout[data-view="dashboard"] .badge{border:1px solid currentColor}}
+@media print{.welcome-friend{display:none}}

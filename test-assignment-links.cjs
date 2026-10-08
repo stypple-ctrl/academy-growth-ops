@@ -1,0 +1,18 @@
+const assert=require('node:assert/strict'),{boot}=require('./test-storage.cjs');
+function setup(){const a=boot();a.run("role='교사';teacher='김서연';page='session';selected=new Set([1]);form('exam')");return a;}
+function assign(a,primary='단어 재시험'){a.node('primary').value=primary;a.node('secondary').value='오답 복습';a.node('secondaryRequired').value='optional';a.node('reason').value='단어 FAIL';a.submit('assign');}
+const a=setup();a.node('correct').value='23';a.submit('exam');const source=a.run('db.events.at(-1).id');assert.equal(a.run('assignmentSourceLinks[1]'),source,'팝업 FAIL 연결');assign(a);assert.equal(a.run('db.tasks.at(-1).sourceAssessmentId'),source);
+a.run("selected=new Set([1]);form('assign')");assert.match(a.node('overlay').innerHTML,/id="assignment-source-1"/);a.node('assignment-source-1').value=String(source);const n=a.run('db.tasks.length');assign(a);assert.equal(a.run('db.tasks.length'),n,'수동 동일 과제 차단');assign(a,'별도 단어 지도');assert.equal(a.run('db.tasks.length'),n+1,'같은 시험 다른 과제 허용');
+const b=boot(a.store.value);b.run("role='교사';selected=new Set([1]);form('assign')");b.node('assignment-source-1').value=String(source);assign(b);assert.equal(b.run('db.tasks.length'),n+1,'재조회 후 중복 차단');
+const c=setup();c.node('correct').value='23';c.submit('exam');const before=c.run('db.tasks.length');c.store.fail=true;assign(c);assert.equal(c.run('db.tasks.length'),before);assert(c.run('assignmentSourceLinks[1]'));c.store.fail=false;assign(c);assert.equal(c.run('db.tasks.length'),before+1);
+const d=setup();d.node('correct').value='23';d.submit('exam');const foreign=d.run("G.event(db,2,'시험','Vocabulary','다른 학생 시험',actor(),'REPORTABLE',{pass:false}).id");d.node('assignment-source-1').value=String(foreign);const prior=d.run('db.tasks.length');assign(d);assert.equal(d.run('db.tasks.length'),prior,'다른 학생 시험 연결 차단');
+console.log('PASS: 팝업·수동·재조회 시험 연결, 같은 과제 중복 차단·다른 과제 허용, 저장 재시도, 다른 학생 연결 차단');
+// A separate exam is a separate assignment opportunity; unlinking is explicit.
+a.run("selected=new Set([1]);form('exam')");a.node('correct').value='22';a.submit('exam');const second=a.run('assignmentSourceLinks[1]');assert.notEqual(second,source);a.node('assignment-source-1').value=String(second);assign(a);assert.equal(a.run('db.tasks.length'),n+2);
+a.run("selected=new Set([1]);form('assign')");a.node('assignment-source-1').value='independent';assign(a,'시험 외 지도');assert.equal(a.run('db.tasks.at(-1).sourceAssessmentId'),undefined);
+const multi=setup();multi.run('selected=new Set([1,2])');multi.node('correct').value='23';multi.submit('exam');assert(multi.run('assignmentSourceLinks[1]!==assignmentSourceLinks[2]'));assign(multi);assert.equal(multi.run('db.tasks.slice(-2).every(t=>db.events.some(e=>e.id===t.sourceAssessmentId&&e.student===t.student))'),true);
+const pass=setup();pass.node('correct').value='24';pass.submit('exam');assert.equal(pass.node('overlay').innerHTML,'');
+console.log('PASS: 다른 시험 동일 과제 허용, 명시적 시험 미연결, 두 학생 각각의 시험 연결, PASS 과제 미생성');
+const blocked=boot(a.store.value);blocked.run("role='교사';selected=new Set([1,2]);form('assign')");blocked.node('assignment-source-1').value=String(source);blocked.node('assignment-source-2').value='independent';const snapshot=blocked.run('JSON.stringify(db)');assign(blocked,'  단어   재시험  ');assert.equal(blocked.run('JSON.stringify(db)'),snapshot,'한 명 중복이면 전체 지정 미저장');
+const passed=setup();const passSource=passed.run("G.event(db,1,'시험','Vocabulary','통과 시험',actor(),'REPORTABLE',{pass:true}).id");passed.run("form('assign')");passed.node('assignment-source-1').value=String(passSource);const taskCount=passed.run('db.tasks.length');assign(passed);assert.equal(passed.run('db.tasks.length'),taskCount,'PASS 시험을 FAIL 근거로 사용 금지');
+console.log('PASS: 공백 정규화 중복 차단·복수 지정 원자성·PASS 근거 변조 차단');

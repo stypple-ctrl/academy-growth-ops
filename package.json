@@ -1,1 +1,12 @@
-{"name":"ieum-growth-demo","version":"1.0.0","private":true,"type":"commonjs","scripts":{"test":"node test-model.cjs","start":"python3 -m http.server 4173 --bind 127.0.0.1"}}
+{
+  "name": "ieum-growth-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test": "node test-model.cjs",
+    "start": "python3 -m http.server 4173 --bind 127.0.0.1",
+    "build": "node scripts/build.cjs",
+    "test:all": "node test-model.cjs && node test-render.cjs && node test-storage.cjs && node test-experience.cjs && node test-roster.cjs && node test-task-policy.cjs && node test-assignment-links.cjs && node test-input-ux.cjs"
+  }
+}

@@ -1,0 +1,27 @@
+const assert=require('node:assert/strict'),{boot}=require('./test-storage.cjs');
+function setup(){const a=boot();a.run("role='교사';teacher='김서연';page='session';className='Bridge A';render()");return a;}
+const a=setup();assert.match(a.node('app').innerHTML,/data-roster-score="1"/,'학생별 점수 입력 칸');
+const input=(a,id,value)=>a.handlers.input({target:{dataset:{rosterScore:String(id)},value}});
+input(a,1,'23');input(a,2,'24');input(a,3,'30');input(a,4,'0');
+const original=a.run('db.events.length');a.click('roster-save');
+assert.equal(a.run('db.events.length'),original+4);assert.equal(a.run('db.events.at(-1).correct'),0);
+assert.equal(a.run('[...selected].join()'),'1,4');assert.match(a.node('overlay').innerHTML,/나머지 지정/);
+assert.equal(a.run('db.events.slice(-4).filter(e=>e.pass).length'),2);
+a.click('roster-save');assert.equal(a.run('db.events.length'),original+4);
+a.node('primary').value='재시험';a.node('secondary').value='오답';a.node('reason').value='단어 FAIL';a.submit('assign');
+assert.equal(a.run('db.tasks.filter(t=>t.sourceAssessmentId).length'),2);
+a.click('roster-fails');const count=a.run('db.tasks.length');a.submit('assign');assert.equal(a.run('db.tasks.length'),count,'동일 본시험 과제 중복 방지');
+const b=setup();input(b,1,'24');input(b,2,'31');const before=b.run('JSON.stringify(db)');b.click('roster-save');assert.equal(b.run('JSON.stringify(db)'),before,'잘못된 점수 포함 시 부분 저장 없음');
+input(b,2,'23');b.store.fail=true;b.click('roster-save');assert.equal(b.run('JSON.stringify(db)'),before);b.run('render()');assert.match(b.node('app').innerHTML,/data-roster-score="1"[^>]*value="24"/);
+b.store.fail=false;b.click('roster-save');assert.equal(b.run('db.events.length'),JSON.parse(before).events.length+2);
+const c=setup();input(c,1,'24');c.run("className='Bridge B';render()");c.click('roster-save');assert.equal(c.run('db.events.length'),JSON.parse(before).events.length);c.run("className='Bridge A';render()");assert.match(c.node('app').innerHTML,/data-roster-score="1"[^>]*value="24"/);
+c.run("role='조교'");c.click('roster-save');assert.equal(c.run('db.events.length'),JSON.parse(before).events.length);
+console.log('PASS: 개별 점수·빈칸/0·경계값, FAIL 연결·동일 시험 중복 방지, 원자적 검증·실패 복구·재시도·반 이동·역할 제한');
+const d=setup();d.run('selected=new Set([1,2])');d.click('event');
+assert.match(d.node('overlay').innerHTML,/id="observationTag"/,'빠른 관찰 태그');
+d.node('observationTag').value='independent';d.handlers.change({target:{id:'observationTag',dataset:{},value:'independent',closest:()=>({})}});
+d.node('area').value='Reading';d.node('visibility').value='REPORTABLE';d.node('memo').value='';const n=d.run('db.events.length');d.submit('event');assert.equal(d.run('db.events.length'),n+2);assert.equal(d.run('db.events.at(-1).text'),'도움 없이 스스로 수행함');
+const e=setup();input(e,1,'23');e.click('end');assert.equal(e.run('page'),'session');assert.equal(e.run('db.lessons?.length||0'),0);
+input(e,1,'');e.store.fail=true;e.click('end');assert.equal(e.run('page'),'session');assert.equal(e.run('db.lessons?.length||0'),0);
+e.store.fail=false;e.click('end');assert.equal(e.run('page'),'home');assert.equal(e.run('db.lessons.length'),1);assert.equal(e.run('db.lessons[0].note'),'특이사항 없음');e.run("page='session'");e.click('end');assert.equal(e.run('db.lessons.length'),1);
+console.log('PASS: 빠른 태그 두 학생 기록, 미저장 점수 마감 방지, 수업 마감 저장 실패·재시도·중복 방지');

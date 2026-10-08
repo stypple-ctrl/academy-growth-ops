@@ -12,3 +12,34 @@ vm.runInContext("page='dashboard';render()",ctx);assert(nodes.app.innerHTML.incl
 vm.runInContext("filters={from:'2030-01-01'};render()",ctx);assert(nodes.app.innerHTML.includes('선택 기간에 기록이 없습니다.'));assert.match(nodes.app.innerHTML,/나머지 대상[\s\S]*?class="value">10<small>명/);
 vm.runInContext("filters={school:'한빛초',class:'Bridge A'};render()",ctx);assert.match(nodes.app.innerHTML,/나머지 대상[\s\S]*?class="value">8<small>명/);
 console.log('PASS: 미확인 표시·기존 관찰 유지, 한국어 용어, 날짜/현재 구분, 학교+반 필터');
+
+// Work-centered UI: direct records target one student, and empty bulk actions stay disabled.
+vm.runInContext("db=G.seed();role='교사';teacher=db.students[0].teacher;filters={};page='session';selected.clear();render()",ctx);
+assert.match(nodes.app.innerHTML,/data-action="event" disabled/);
+const target=vm.runInContext('scope()[0].id',ctx);
+for(const kind of ['event','exam','assign']){
+  vm.runInContext('selected=new Set(scope().slice(0,3).map(s=>s.id))',ctx);
+  handlers.click({target:{closest:()=>({dataset:{action:'quick-record',id:String(target),kind}})}});
+  assert.equal(vm.runInContext('[...selected].join()',ctx),String(target));
+  assert(nodes.overlay.innerHTML.includes('entryForm'),kind);
+}
+const before=nodes.overlay.innerHTML;
+handlers.click({target:{closest:()=>({dataset:{action:'quick-record',id:'999999',kind:'event'}})}});
+assert.equal(nodes.overlay.innerHTML,before);
+vm.runInContext("role='조교';page='board';render()",ctx);
+assert.equal((nodes.app.innerHTML.match(/<article class="task"/g)||[]).length,vm.runInContext('db.tasks.length',ctx));
+assert(nodes.app.innerHTML.indexOf('data-state="확인대기"')<nodes.app.innerHTML.indexOf('data-state="대기"'));
+assert.match(nodes.app.innerHTML,/<details class="completed-tasks">/);
+console.log('PASS: 학생별 기록 대상·범위 제한, 빈 선택 차단, 과제 누락 없음·확인대기 우선·완료 접기');
+
+// Student identity stays consistent when task status changes.
+vm.runInContext("role='조교';page='board';db=G.seed();render()",ctx);
+assert.equal((nodes.app.innerHTML.match(/class="task-cover"/g)||[]).length,vm.runInContext('db.tasks.length',ctx));
+assert.equal((nodes.app.innerHTML.match(/class="student-gallery"/g)||[]).length,4);
+const tone=vm.runInContext('taskCard(db.tasks[0]).match(/data-tone="(\\d+)"/)[1]',ctx);
+vm.runInContext("db.tasks[0].status='확인대기';render()",ctx);
+assert.equal(vm.runInContext('taskCard(db.tasks[0]).match(/data-tone="(\\d+)"/)[1]',ctx),tone);
+assert(nodes.app.innerHTML.includes('지시서 크게 보기'));
+handlers.click({target:{closest:()=>({dataset:{action:'task-guide',id:'1'}})}});
+assert(nodes.overlay.innerHTML.includes('오늘의 작업 지시서'));
+console.log('PASS: 모든 학생 카드 헤더·상태별 갤러리, 상태 이동 후 식별 색 유지, 지시서 확대');

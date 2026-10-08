@@ -9,3 +9,7 @@ node_modules/
 
 # Local agent runtime state
 .omc/
+
+# Generated deployment output and local Vercel account link
+dist/
+.vercel/

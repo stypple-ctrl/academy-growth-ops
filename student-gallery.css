@@ -1,0 +1,71 @@
+/* Student gallery: stable identity colors, explicit status labels, independent controls. */
+.layout[data-view="board"] .board {
+  display:flex;flex-direction:column;gap:28px;overflow:visible;padding-bottom:24px;
+}
+.layout[data-view="board"] .column {
+  width:100%;min-height:0;background:#e9edf2;border:1px solid #d0d8e2;
+  border-radius:20px;padding:22px;
+}
+.layout[data-view="board"] .column>h3 {
+  margin:0 0 18px;font-size:17px;gap:10px;color:#25364b;
+}
+.layout[data-view="board"] .column>h3 .badge {margin-left:0;background:#fff;border:1px solid #d0d8e2;font-size:12px}
+.layout[data-view="board"] .column[data-state="확인대기"] {background:#e8eef9;border-color:#bccce6}
+.layout[data-view="board"] .column[data-state="미완료"] {background:#f3ebe5;border-color:#dccbbb}
+.layout[data-view="board"] .student-gallery,
+.layout[data-view="board"] .completed-tasks>.cards {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:24px;align-items:start;
+}
+.layout[data-view="board"] .task {
+  --cover:#dceafa;--cover-ink:#274c79;--edge:#a9bfdc;
+  padding:0;margin:0;min-width:0;background:#fff;border:1px solid var(--edge);
+  border-radius:20px;overflow:hidden;box-shadow:0 5px 0 #293f5710,0 10px 22px #293f5712;
+  transition:box-shadow .18s,border-color .18s;
+}
+.layout[data-view="board"] .task[data-tone="1"] {--cover:#f8e5c8;--cover-ink:#714d20;--edge:#d9bf98}
+.layout[data-view="board"] .task[data-tone="2"] {--cover:#e9e0f8;--cover-ink:#5c427e;--edge:#c1afd9}
+.layout[data-view="board"] .task[data-tone="3"] {--cover:#dceede;--cover-ink:#386044;--edge:#a8c9af}
+.layout[data-view="board"] .task[data-tone="4"] {--cover:#f8dfe3;--cover-ink:#80424c;--edge:#dcaeb7}
+.layout[data-view="board"] .task[data-tone="5"] {--cover:#d8eef0;--cover-ink:#2b5d63;--edge:#9fc8cc}
+.layout[data-view="board"] .task:hover,
+.layout[data-view="board"] .task:focus-within {box-shadow:0 6px 0 #293f5712,0 14px 28px #293f5720;border-color:var(--cover-ink)}
+.task-cover {
+  display:flex;position:relative;align-items:center;gap:12px;min-height:122px;
+  padding:24px 20px 38px;background:var(--cover);border-bottom:1px solid var(--edge);
+}
+.task-monogram {
+  display:grid;place-items:center;flex-shrink:0;width:48px;height:48px;
+  border-radius:17px;background:#ffffffd9;border:1px solid #ffffff;
+  color:var(--cover-ink);font-size:17px;font-weight:700;box-shadow:0 3px 0 #00000008;
+}
+.task-identity {min-width:0;flex:1}
+.layout[data-view="board"] .task-identity>b,
+.layout[data-view="board"] .task-identity .student-link {font-size:21px;line-height:1.35;letter-spacing:-.5px;color:var(--cover-ink)}
+.layout[data-view="board"] .task-identity small {display:block;margin-top:5px;font-size:12px;color:var(--cover-ink)}
+.layout[data-view="board"] .task-identity .student-link {margin:0;min-height:28px;background:transparent;box-shadow:none}
+.task-state-label {
+  position:absolute;bottom:10px;right:16px;padding:3px 9px;background:#fffffff0;
+  color:var(--cover-ink);border-radius:8px;font-size:12px;font-weight:600;
+}
+.task-content {padding:20px}
+.layout[data-view="board"] .task-content>p:first-child {margin:0 0 14px;color:#485668;font-size:13px}
+.layout[data-view="board"] .task .guide-button {
+  margin:0 0 6px;background:var(--cover);color:var(--cover-ink);border:1px solid var(--edge);
+  border-radius:10px;font-size:13px;min-height:40px;text-align:center;
+}
+.layout[data-view="board"] .task .guide-button:hover {border-color:var(--cover-ink);box-shadow:0 2px 5px #00000010}
+.layout[data-view="board"] .task .note {font-size:12px;color:#596575;letter-spacing:0;margin-top:16px}
+.layout[data-view="board"] .task .task-field {font-size:12px;color:#596575}
+.layout[data-view="board"] .task .task-field select {background:#f7f9fc;border-color:#c6cfdc}
+.layout[data-view="board"] .task .time {border-top:1px dashed #d7dee7;padding-top:12px;margin-top:14px;line-height:1.7;color:#805419}
+.layout[data-view="board"] .completed-tasks {background:#eef1f5;border-color:#d0d8e2;padding:20px;border-radius:20px}
+.layout[data-view="board"] .student-gallery>.empty {border:1px dashed #b9c5d4;border-radius:14px;padding:20px;color:#536276;background:#ffffff75;text-align:left}
+@media(max-width:650px){
+  .layout[data-view="board"] .column {padding:15px;border-radius:17px}
+  .layout[data-view="board"] .student-gallery,
+  .layout[data-view="board"] .completed-tasks>.cards {grid-template-columns:1fr;gap:22px}
+  .layout[data-view="board"] .column>h3 {font-size:16px}
+  .task-cover {padding:20px 18px 38px}.task-content {padding:18px}
+}
+@media(prefers-reduced-motion:reduce){.layout[data-view="board"] .task{transition:none}}
+@media(prefers-contrast:more){.layout[data-view="board"] .task{border:2px solid var(--cover-ink)}.task-cover{border-bottom-color:var(--cover-ink)}}
